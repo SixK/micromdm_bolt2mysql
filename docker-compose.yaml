@@ -13,15 +13,6 @@ services:
       MICROMDM_MYSQL_DATABASE: micromdm
       MICROMDM_MYSQL_HOST: me.home.local
       MICROMDM_MYSQL_PORT: 3306
-      MICROMDM_API_KEY: MySuperSecretKey
-      MICROMDM_HTTP_ADDR: ":3478"
-      MICROMDM_TLS: "true"
-      MICROMDM_SERVER_URL: "https://me.home.local:3478/"
-      MICROMDM_FILE_REPO: ./repo
-      MICROMDM_TLS_CERT: /micromdm/server.crt
-      MICROMDM_TLS_KEY: /micromdm/server.key
-    ports:
-      - 3478:3478
     command: /go/src/github.com/micromdm/micromdm/micromdm_bolt2mysql
     volumes:
         - ./bolt_database:/tmp/

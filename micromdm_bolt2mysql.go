@@ -2,13 +2,16 @@ package main
 
 import (
     "fmt"
+    "flag"
     "log"
     "time"
     "context"
     "strings"
     "math/big"
-
+    
     "database/sql"
+
+    "github.com/micromdm/go4/env"
 
     "github.com/pkg/errors"
     "github.com/boltdb/bolt"
@@ -64,10 +67,24 @@ func init() {
     // It will be created if it doesn't exist.
     log.Println("in Init !")
 
+    flMysqlUsername     := *flag.String("mysql-username", env.String("MICROMDM_MYSQL_USER", "micromdm"), "Username to login to Mysql")
+    flMysqlPassword     := *flag.String("mysql-password", env.String("MICROMDM_MYSQL_PASSWORD", "micromdm"), "Password to login to Mysql")
+    flMysqlDatabase     := *flag.String("mysql-database", env.String("MICROMDM_MYSQL_DATABASE", "micromdm"), "Name of the Mysql Database")
+    flMysqlHost         := *flag.String("mysql-host", env.String("MICROMDM_MYSQL_HOST", "localhost"), "IP or URL to the Mysql Host")
+    flMysqlPort         := *flag.String("mysql-port", env.String("MICROMDM_MYSQL_PORT", "3306"), "Port to use for Mysql connection")
+
+
     db, err = bolt.Open("/tmp/micromdm.db", 0600, &bolt.Options{Timeout: 1 * time.Second})
     if err != nil { log.Fatal(err) }
 
-    mydb, err = sqlx.Connect("mysql", "micromdm:micromdm@(localhost:3306)/micromdm")
+    // mydb, err = sqlx.Connect("mysql", "micromdm:micromdm@(localhost:3306)/micromdm")
+    mydb, err = sqlx.Connect("mysql", 
+                             fmt.Sprintf("%s:%s@(%s:%s)/%s", 
+                                         flMysqlUsername, 
+                                         flMysqlPassword, 
+                                         flMysqlHost, 
+                                         flMysqlPort, 
+                                         flMysqlDatabase))
     if mydb == nil { log.Println("hey that's bad !!!") }
 
     if err != nil { log.Fatalln(err) }
