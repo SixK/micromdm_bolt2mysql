@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
     image: micromdm_bolt2mysql
     environment:
-      MMICROMDM_MYSQL_USER: micromdm
+      MICROMDM_MYSQL_USER: micromdm
       MICROMDM_MYSQL_PASSWORD: micromdm
       MICROMDM_MYSQL_DATABASE: micromdm
       MICROMDM_MYSQL_HOST: me.home.local
