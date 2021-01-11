@@ -397,13 +397,15 @@ func iterateCertificatesDB(bucketName []byte) {
     if ca_certificate != nil && ca_key != nil && serial.Cmp(big.NewInt(0)) != 0 {
         fmt.Println("data : ", &serial, ca_certificate, ca_key)
 
+	// mapping ca_certificate == ca_key and private_key == ca_certificate is probably wrong
+	// but original micromdm_mysql has done this like that so ...
         updateQuery, args_update, err := sq.StatementBuilder.
                 PlaceholderFormat(sq.Question).
                 Update("server_config").
                 Prefix("ON DUPLICATE KEY").
                 Set("config_id", 4).
-                Set("push_certificate", ca_certificate).
-                Set("private_key", ca_key).
+                Set("push_certificate", ca_key).
+                Set("private_key", ca_certificate).
                 ToSql()
         if err != nil { fmt.Println("error:", err) }
 
@@ -417,8 +419,8 @@ func iterateCertificatesDB(bucketName []byte) {
             Columns("config_id", "push_certificate", "private_key").
             Values(
                 4,
-                ca_certificate,
                 ca_key,
+                ca_certificate,
             ).
             Suffix(updateQuery).
             ToSql()
